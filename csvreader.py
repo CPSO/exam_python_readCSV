@@ -3,6 +3,7 @@
 
 # Imports
 import csv
+import json
 from consolemenu import *
 from consolemenu.items import *
 
@@ -16,8 +17,14 @@ def setupMenu():
     menu = ConsoleMenu("K.E.A - Krime Enforcment Archive")
     function_item = FunctionItem("Show the Data", showDB)
     function_item2 = FunctionItem("Search the Data", searchCrime)
+    function_item3 = FunctionItem("add item to csv", writeToCSV)
+    function_item4 = FunctionItem("make JSON",makeJSON)
+    function_item5 = FunctionItem("make new JSON", makeNewJSON)
     menu.append_item(function_item)
     menu.append_item(function_item2)
+    menu.append_item(function_item3)
+    menu.append_item(function_item4)
+    menu.append_item(function_item5)
     menu.show()
     
     
@@ -38,7 +45,10 @@ def showDB():
     
 
 def searchCrime():
-    crimeCode = input('what code?: ')
+    #cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude
+    print('cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude')
+    searchFilter = input('What filter?: ')
+    serachInput = input('What to search for?: ')
     with open('db/crimedb.csv', mode='r') as csv_file:
         csv_reader = csv.DictReader(csv_file)
         line_count = 0
@@ -46,28 +56,77 @@ def searchCrime():
             if line_count == 0:
                  print(f'Column names are {", ".join(row)}')
                  line_count += 1
-            if row['district'] == crimeCode:
-                print(f'\t{row["cdatetime"]} works in the {row["address"]} department, and was born in {row["district"]}.')
+            if row[searchFilter] == serachInput:
+                print(f'\t{row["cdatetime"]} Adress: {row["address"]} District:{row["district"]} ' + f'\n Beat: {row["beat"]} Grid: {row["grid"]}'+
+                    f'\t Crime Desc: {row["crimedescr"]} UCR_NCIC_CODE: {row["ucr_ncic_code"]} Latitude: {row["latitude"]} Longitude: {row["longitude"]} ')
                 line_count += 1
         print(f'Processed {line_count} lines.')
         Screen().input('Press [Enter] to continue')
-       
 
-    """
-    ucr_ncic_codee = 2142
-    with open('db/crimedb.csv', mode='r') as csv_file:
-        csv_reader = csv.DictReader(csv_file)
-        line_count = 0
-        for row in csv_reader:
-            if row["ucr_ncic_codee"] == ucr_ncic_codee:
-                if line_count == 0:
-                    print(f'Column names are {", ".join(row)}')
-                    line_count += 1
-            print(f'\t {row}')
-            line_count += 1
-        print(f'Processed {line_count} lines.')
-        """
+def searchCrimeRadius():
+    #Search Crime in a radius of 5km
+    print('latitude,longitude')
+    searchLat = input('Enter Latitude: ')
+    searchLong = input('Enter Longitude: ')
+
+def writeToCSV():
+   
+    row = ['05/24/19 10:15', ' Danny', ' New York']
+    with open('db/crimedb.csv', 'a') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(row)
+    csv_file.close()
     
+    """
+    row = ['05/24/19 10:15', ' Danny', ' New York'] 
+    with open('db/crimedb.csv', 'a') as f:
+        writer = csv.writer(f)
+        writer.writerows(row)
+    """
+
+def makeJSON():
+
+    # Open the CSV  
+    f = open( 'db/crimedb.csv', 'rU' )  
+    # Change each fieldname to the appropriate field name. I know, so difficult.  
+    reader = csv.DictReader( f, fieldnames = ( "cdatetime","address","district","beat","grid","crimedescr","ucr_ncic_code","latitude","longitude" ))  
+    # Parse the CSV into JSON  
+    out = json.dumps( [ row for row in reader ] )  
+    print ("JSON parsed!")  
+    # Save the JSON  
+    f = open( 'json/crimejson.json', 'w')  
+    f.write(out)  
+    print ("JSON saved!")
+
+def makeNewJSON():
+    csvFilePath = "db/crimedb.csv"
+    jsonFilePath = "json/parsed.json"
+    #read the csv and add the data to a dictionary
+    data = {}
+    with open (csvFilePath) as csvFile:
+        csvReader = csv.DictReader(csvFile)
+        for csvRow in csvReader:
+            id = csvRow["cdatetime"]
+            data[id] = csvRow
+    print(data)
+    # write the data toa json file
+    with open(jsonFilePath, "w") as jsonFile:
+        jsonFile.write(json.dumps(data, indent = 4))
+
+    arr = []
+#read the csv and add the arr to a arrayn
+
+    with open (csvFilePath) as csvFile:
+        csvReader = csv.DictReader(csvFile)
+        print(csvReader)
+        for csvRow in csvReader:
+            arr.append(csvRow)
+
+    print(arr)
+
+    # write the data to a json file
+    with open(jsonFilePath, "w") as jsonFile:
+        jsonFile.write(json.dumps(arr, indent = 4))
 
 main()
 pass
