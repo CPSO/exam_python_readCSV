@@ -23,11 +23,13 @@ def setupMenu():
     function_item3 = FunctionItem("add item to csv", writeToCSV)
     function_item4 = FunctionItem("make new JSON", makeJSON)
     function_item5 = FunctionItem("make HTML", makeHTML)
+    function_item6 = FunctionItem("make HTML", backupHTML)
     menu.append_item(function_item)
     menu.append_item(function_item2)
     menu.append_item(function_item3)
     menu.append_item(function_item4)
     menu.append_item(function_item5)
+    menu.append_item(function_item6)
     menu.show()
     
     
@@ -52,19 +54,37 @@ def searchCrime():
     print('cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude')
     searchFilter = input('What filter?: ')
     serachInput = input('What to search for?: ')
+    html_output = ""
+    dataEntry = []
     with open('db/crimedb.csv', mode='r') as csv_file:
         csv_reader = csv.DictReader(csv_file)
+        html_output += '<table>'
+        html_output += '\n<tr>'
         line_count = 0
         for row in csv_reader:
             if line_count == 0:
-                 print(f'Column names are {", ".join(row)}')
-                 line_count += 1
-            if row[searchFilter] == serachInput:
-                print(f'\t{row["cdatetime"]} Adress: {row["address"]} District:{row["district"]} ' + f'\n Beat: {row["beat"]} Grid: {row["grid"]}'+
-                    f'\t Crime Desc: {row["crimedescr"]} UCR_NCIC_CODE: {row["ucr_ncic_code"]} Latitude: {row["latitude"]} Longitude: {row["longitude"]} ')
+                print(f'<th>{"</th>".join(row)}')
+                text = (f'<th>{"</th> <th>".join(row)}</th>')
+                html_output += text
                 line_count += 1
+            if row[searchFilter] == serachInput:
+                dataEntry.append(f"<td>{row['cdatetime']}</td> <td>{row['address']}</td> <td>{row['district']}</td> <td>{row['beat']}</td> <td>{row['grid']}</td> <td>{row['crimedescr']}</td> <td>{row['ucr_ncic_code']}</td> <td>{row['latitude']}</td> <td>{row['longitude']}</td> ")
+                line_count += 1
+        numberOfEntrys = f'<p>Search gave {len(dataEntry)} hits in the registerey</p>'
+        html_output += '\n</tr>'
         print(f'Processed {line_count} lines.')
-        Screen().input('Press [Enter] to continue')
+        html_output += '\n<tr>'
+
+        for entry in dataEntry:
+            html_output += f'\n\t<tr>{entry}</tr>'
+
+        html_output += '\n</tr>'
+
+    html_file = open('html/searchhtml.html','w+')
+    html_file = html_file.write(html_output)
+
+
+    Screen().input('Press [Enter] to continue')
 
 def searchCrimeRadius():
     #Search Crime in a radius of 5km
@@ -74,8 +94,8 @@ def searchCrimeRadius():
 
 def writeToCSV():
    
-    row = ['05/24/19 10:15', ' Danny', ' New York']
-    with open('db/crimedb.csv', 'a') as csv_file:
+    row = ['05/24/19 10:15', ' Bobby', ' New York']
+    with open('db/crimedb.csv', 'w') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(row)
     csv_file.close()
@@ -109,33 +129,6 @@ def makeHTML():
     
 
 def backupHTML():
-    with open ('db/crimedb.csv', 'r') as csv_file:
-        csv_file = csv.DictReader(csv_file)
-    #reader = csv.reader(open('db/crimedb.csv'),'r')
-    htm_output = ""
-    htmlFilePath = "html/fullhtml.html"
-
-    #htmlFile = open ('html/fullhtml.html','w+')
-    rownum = 0
-    htm_output += ('<table>')
-
-    for row in csv_file:
-        if rownum == 0:
-            htm_output += ('<tr>')
-            for column in row:
-                htm_output += ('<th>' + column + '</th>')
-            htm_output += ('</tr>')
-        else:
-            htm_output += ('<tr>')
-            for column in row:
-                htm_output += ('<td>' + column + '</td>')
-            htm_output += ('</tr>')
-        rownum += 1
-
-    htm_output += ('</table>')
-
-
-
     Screen().input('Press [Enter] to continue')
 
 
