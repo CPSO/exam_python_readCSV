@@ -84,25 +84,20 @@ def writeToCSV():
 def makeHTML():    
 #cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude
     html_output = ''
-    names = []
+    data = []
 
     with open('db/crimedb.csv', 'r') as data_file:
         csv_data = csv.DictReader(data_file)
 
-        # We don't want first line of bad data
-        next(csv_data)
-
         for line in csv_data:
-            if line['cdatetime'] == 'No Reward':
-                break
-            names.append(f"{line['cdatetime']} {line['address']}")
-
-        html_output += f'<p>There are currently {len(names)} public contributors. Thank You!</p>'
+            data.append(f"{line['cdatetime']} {line['address']} {line['district']} {line['beat']} {line['grid']} {line['crimedescr']} {line['ucr_ncic_code']} {line['latitude']} {line['longitude']} ")
+        html_output += f'<p>There are currently {len(data)} in the registerey</p>'
 
     html_output += '\n<ul>'
+    
 
-    for name in names:
-        html_output += f'\n\t<li>{name}</li>'
+    for entry in data:
+        html_output += f'\n\t<li>{entry}</li>'
 
     html_output += '\n</ul>'
 
