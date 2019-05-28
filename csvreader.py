@@ -6,6 +6,9 @@ import csv
 import json
 from consolemenu import *
 from consolemenu.items import *
+from html import escape
+import io
+import sys
 
 def main():
     setupMenu()
@@ -18,8 +21,8 @@ def setupMenu():
     function_item = FunctionItem("Show the Data", showDB)
     function_item2 = FunctionItem("Search the Data", searchCrime)
     function_item3 = FunctionItem("add item to csv", writeToCSV)
-    function_item4 = FunctionItem("make JSON",makeJSON)
-    function_item5 = FunctionItem("make new JSON", makeNewJSON)
+    function_item4 = FunctionItem("make new JSON", makeJSON)
+    function_item5 = FunctionItem("make HTML", makeHTML)
     menu.append_item(function_item)
     menu.append_item(function_item2)
     menu.append_item(function_item3)
@@ -76,29 +79,73 @@ def writeToCSV():
         writer = csv.writer(csv_file)
         writer.writerow(row)
     csv_file.close()
+
+
+def makeHTML():    
+#cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude
+    html_output = ''
+    names = []
+
+    with open('db/crimedb.csv', 'r') as data_file:
+        csv_data = csv.DictReader(data_file)
+
+        # We don't want first line of bad data
+        next(csv_data)
+
+        for line in csv_data:
+            if line['cdatetime'] == 'No Reward':
+                break
+            names.append(f"{line['cdatetime']} {line['address']}")
+
+        html_output += f'<p>There are currently {len(names)} public contributors. Thank You!</p>'
+
+    html_output += '\n<ul>'
+
+    for name in names:
+        html_output += f'\n\t<li>{name}</li>'
+
+    html_output += '\n</ul>'
+
+    html_file = open('html/fullhtml.html','w+')
+    html_file = html_file.write(html_output)
     
-    """
-    row = ['05/24/19 10:15', ' Danny', ' New York'] 
-    with open('db/crimedb.csv', 'a') as f:
-        writer = csv.writer(f)
-        writer.writerows(row)
-    """
+        
+
+    
+
+def backupHTML():
+    with open ('db/crimedb.csv', 'r') as csv_file:
+        csv_file = csv.DictReader(csv_file)
+    #reader = csv.reader(open('db/crimedb.csv'),'r')
+    htm_output = ""
+    htmlFilePath = "html/fullhtml.html"
+
+    #htmlFile = open ('html/fullhtml.html','w+')
+    rownum = 0
+    htm_output += ('<table>')
+
+    for row in csv_file:
+        if rownum == 0:
+            htm_output += ('<tr>')
+            for column in row:
+                htm_output += ('<th>' + column + '</th>')
+            htm_output += ('</tr>')
+        else:
+            htm_output += ('<tr>')
+            for column in row:
+                htm_output += ('<td>' + column + '</td>')
+            htm_output += ('</tr>')
+        rownum += 1
+
+    htm_output += ('</table>')
+
+
+
+    Screen().input('Press [Enter] to continue')
+
+
 
 def makeJSON():
-
-    # Open the CSV  
-    f = open( 'db/crimedb.csv', 'rU' )  
-    # Change each fieldname to the appropriate field name. I know, so difficult.  
-    reader = csv.DictReader( f, fieldnames = ( "cdatetime","address","district","beat","grid","crimedescr","ucr_ncic_code","latitude","longitude" ))  
-    # Parse the CSV into JSON  
-    out = json.dumps( [ row for row in reader ] )  
-    print ("JSON parsed!")  
-    # Save the JSON  
-    f = open( 'json/crimejson.json', 'w')  
-    f.write(out)  
-    print ("JSON saved!")
-
-def makeNewJSON():
     csvFilePath = "db/crimedb.csv"
     jsonFilePath = "json/parsed.json"
     #read the csv and add the data to a dictionary
