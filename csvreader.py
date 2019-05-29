@@ -9,6 +9,8 @@ from consolemenu.items import *
 from html import escape
 import io
 import sys
+fieldnames = ['cdatetime', 'address', 'district', 'beat', 'grid',
+              'crimedescr', 'ucr_ncic_code', 'latitude', 'longitude']
 
 def main():
     setupMenu()
@@ -23,11 +25,13 @@ def setupMenu():
     MakeJSON = FunctionItem("Make Full JSON", makeJSON)
     SearchTheDB = FunctionItem("Search the data", searchCrime)
     AddEntry = FunctionItem("Add a new crime", writeToCSV)
+    SearchRadius = FunctionItem("Search crime in a radius", searchCrimeRadius)
     menu.append_item(PrintTheData)
     menu.append_item(MakeHTML)
     menu.append_item(MakeJSON)
     menu.append_item(SearchTheDB)
     menu.append_item(AddEntry)
+    menu.append_item(SearchRadius)
     menu.show()
     
     
@@ -121,10 +125,57 @@ def searchCrime():
     """
 
 def searchCrimeRadius():
+    jsonFilePath = "json/search.json"
     #Search Crime in a radius of 5km
     print('latitude,longitude')
-    searchLat = input('Enter Latitude: ')
-    searchLong = input('Enter Longitude: ')
+    input_coordinate  = input('Please input a coordinate separated by a comma (latitude,longitude)\n').split(',')
+    input_radius  = float(input('Please input desired radius in miles\n')) * 0.0145  # converts miles to long/lat
+    
+    
+#read the csv and add the arr to a arrayn
+    csvFilePath = "db/crimedb.csv"
+    arr = []
+    dataEntry = []
+    html_output = ""
+    with open (csvFilePath) as csvFile:
+        csvReader = csv.DictReader(csvFile)
+        for row in csvReader:
+            if float(row['latitude']) - float(input_coordinate[0]) <= input_radius and \
+                    float(input_coordinate[0]) - float(row['latitude']) <= input_radius:
+                if float(row['longitude']) - float(input_coordinate[1]) <= input_radius and \
+                        float(input_coordinate[1]) - float(row['longitude']) <= input_radius:
+                    arr.append(row)
+                    dataEntry.append(f"<td>{row['cdatetime']}</td> <td>{row['address']}</td> <td>{row['district']}</td> <td>{row['beat']}</td> <td>{row['grid']}</td> <td>{row['crimedescr']}</td> <td>{row['ucr_ncic_code']}</td> <td>{row['latitude']}</td> <td>{row['longitude']}</td> ")
+                    with open(jsonFilePath, "w") as jsonFile:
+                        jsonFile.write(json.dumps(arr, indent = 4))
+        
+    # HTML
+    html_output += '<table>\n' \
+           '  <tr>\n' \
+        f'    <th>{fieldnames[0]}</th>\n' \
+        f'    <th>{fieldnames[1]}</th>\n' \
+        f'    <th>{fieldnames[2]}</th>\n' \
+        f'    <th>{fieldnames[3]}</th>\n' \
+        f'    <th>{fieldnames[4]}</th>\n' \
+        f'    <th>{fieldnames[5]}</th>\n' \
+        f'    <th>{fieldnames[6]}</th>\n' \
+        f'    <th>{fieldnames[7]}</th>\n' \
+        f'    <th>{fieldnames[8]}</th>\n' \
+           '  </tr>\n'
+    
+    html_output += '\n<tr>'
+    for entry in dataEntry:
+        html_output += f'\n\t<tr>{entry}</tr>'
+    html_output += '\n</tr>'
+
+    html_output += '\n</tr>'
+    html_output += '</table>'
+    html_output += f'<p>Search gave {len(dataEntry)} hits in the registerey</p>'
+    html_output += '\n<style> table { font-family: arial, sans-serif; border-collapse: collapse; width: 100%; } td, th { border: 1px solid #dddddd; text-align: left; padding: 8px; } tr:nth-child(even) { background-color: #dddddd; } </style>'
+    html_file = open('html/searchhtml.html','w+')
+    html_file = html_file.write(html_output)
+
+    
 
 def writeToCSV():
    
@@ -192,9 +243,6 @@ def makeJSON():
         print(csvReader)
         for csvRow in csvReader:
             arr.append(csvRow)
-
-    print(arr)
-
     # write the data to a json file
     with open(jsonFilePath, "w") as jsonFile:
         jsonFile.write(json.dumps(arr, indent = 4))
