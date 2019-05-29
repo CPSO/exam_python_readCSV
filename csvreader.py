@@ -18,18 +18,16 @@ def main():
 ##Function-items runs a def when called.
 def setupMenu():
     menu = ConsoleMenu("K.E.A - Krime Enforcment Archive")
-    function_item = FunctionItem("Show the Data", showDB)
-    function_item2 = FunctionItem("Search the Data", searchCrime)
-    function_item3 = FunctionItem("add item to csv", writeToCSV)
-    function_item4 = FunctionItem("make new JSON", makeJSON)
-    function_item5 = FunctionItem("make HTML", makeHTML)
-    function_item6 = FunctionItem("make HTML", backupHTML)
-    menu.append_item(function_item)
-    menu.append_item(function_item2)
-    menu.append_item(function_item3)
-    menu.append_item(function_item4)
-    menu.append_item(function_item5)
-    menu.append_item(function_item6)
+    PrintTheData = FunctionItem("Show the data", showDB)
+    MakeHTML = FunctionItem("Make Full HTML",makeHTML)
+    MakeJSON = FunctionItem("Make Full JSON", makeJSON)
+    SearchTheDB = FunctionItem("Search the data", searchCrime)
+    AddEntry = FunctionItem("Add a new crime", writeToCSV)
+    menu.append_item(PrintTheData)
+    menu.append_item(MakeHTML)
+    menu.append_item(MakeJSON)
+    menu.append_item(SearchTheDB)
+    menu.append_item(AddEntry)
     menu.show()
     
     
@@ -80,11 +78,47 @@ def searchCrime():
 
         html_output += '\n</tr>'
 
+        html_output += '<style> table { font-family: arial, sans-serif; border-collapse: collapse; width: 100%; } td, th { border: 1px solid #dddddd; text-align: left; padding: 8px; } tr:nth-child(even) { background-color: #dddddd; } </style>'
+
     html_file = open('html/searchhtml.html','w+')
     html_file = html_file.write(html_output)
 
 
+    #JSON PART
+    csvFilePath = "db/crimedb.csv"
+    jsonFilePath = "json/search.json"
+    arr = []
+#read the csv and add the arr to a arrayn
+    with open (csvFilePath) as csvFile:
+        csvReader = csv.DictReader(csvFile)
+        for csvRow in csvReader:
+            if csvRow[searchFilter] == serachInput:
+                arr.append(csvRow)
+    print(arr)
+
+    # write the data to a json file
+    with open(jsonFilePath, "w") as jsonFile:
+        jsonFile.write(json.dumps(arr, indent = 4))
     Screen().input('Press [Enter] to continue')
+
+
+    """
+    csvFilePath = "db/crimedb.csv"
+    jsonFilePath = "json/search.json"
+    #read the csv and add the data to a dictionary
+    data = {}
+    with open (csvFilePath) as csvFile:
+        csvReader = csv.DictReader(csvFile)
+        for csvRow in csvReader:
+            if csvRow[searchFilter] == serachInput:
+                id = csvRow["cdatetime"]
+                data[id] = csvRow
+    print(data)
+    # write the data toa json file
+    with open(jsonFilePath, "w") as jsonFile:
+        jsonFile.write(json.dumps(data, indent = 4))
+    Screen().input('Press [Enter] to continue')
+    """
 
 def searchCrimeRadius():
     #Search Crime in a radius of 5km
@@ -105,37 +139,38 @@ def makeHTML():
 #cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude
     html_output = ''
     data = []
+    html_output += '<table>'
+    html_output += '<tr>'
+    line_count = 0
 
     with open('db/crimedb.csv', 'r') as data_file:
         csv_data = csv.DictReader(data_file)
 
         for line in csv_data:
-            data.append(f"{line['cdatetime']} {line['address']} {line['district']} {line['beat']} {line['grid']} {line['crimedescr']} {line['ucr_ncic_code']} {line['latitude']} {line['longitude']} ")
-        html_output += f'<p>There are currently {len(data)} in the registerey</p>'
+            if line_count == 0:
+                text = (f'<th>{"</th> <th>".join(line)}</th>')
+                html_output += text
+                html_output += '</tr>'
+                line_count += 1
+            data.append(f"<td>{line['cdatetime']}</td> <td>{line['address']}</td> <td>{line['district']}</td> <td>{line['beat']}</td> <td>{line['grid']}</td> <td>{line['crimedescr']}</td> <td>{line['ucr_ncic_code']}</td> <td>{line['latitude']}</td> <td>{line['longitude']}</td> ")
+        #html_output += f'<p>There are currently {len(data)} in the registerey</p>'
 
-    html_output += '\n<ul>'
     
 
     for entry in data:
-        html_output += f'\n\t<li>{entry}</li>'
+        html_output += f'\n\t<tr>{entry}</tr>'
 
-    html_output += '\n</ul>'
+    html_output += '</table>'
 
+    html_output += '\n<style> table { font-family: arial, sans-serif; border-collapse: collapse; width: 100%; } td, th { border: 1px solid #dddddd; text-align: left; padding: 8px; } tr:nth-child(even) { background-color: #dddddd; } </style>'
     html_file = open('html/fullhtml.html','w+')
     html_file = html_file.write(html_output)
-    
-        
-
-    
-
-def backupHTML():
-    Screen().input('Press [Enter] to continue')
-
 
 
 def makeJSON():
     csvFilePath = "db/crimedb.csv"
     jsonFilePath = "json/parsed.json"
+    """
     #read the csv and add the data to a dictionary
     data = {}
     with open (csvFilePath) as csvFile:
@@ -147,6 +182,7 @@ def makeJSON():
     # write the data toa json file
     with open(jsonFilePath, "w") as jsonFile:
         jsonFile.write(json.dumps(data, indent = 4))
+    """
 
     arr = []
 #read the csv and add the arr to a arrayn

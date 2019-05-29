@@ -3,7 +3,7 @@
         "cdatetime": "1/1/06 0:00",
         "address": "3108 OCCIDENTAL DR",
         "district": "3",
-        "beat": "3C",
+        "beat": "3C        ",
         "grid": "1115",
         "crimedescr": "10851(A)VC TAKE VEH W/O OWNER",
         "ucr_ncic_code": "2404",
@@ -14,7 +14,7 @@
         "cdatetime": "1/1/06 0:00",
         "address": "2082 EXPEDITION WAY",
         "district": "5",
-        "beat": "5A",
+        "beat": "5A        ",
         "grid": "1512",
         "crimedescr": "459 PC  BURGLARY RESIDENCE",
         "ucr_ncic_code": "2204",
@@ -25,7 +25,7 @@
         "cdatetime": "1/1/06 0:00",
         "address": "4 PALEN CT",
         "district": "2",
-        "beat": "2A",
+        "beat": "2A        ",
         "grid": "212",
         "crimedescr": "10851(A)VC TAKE VEH W/O OWNER",
         "ucr_ncic_code": "2404",
@@ -36,7 +36,7 @@
         "cdatetime": "1/1/06 0:00",
         "address": "22 BECKFORD CT",
         "district": "6",
-        "beat": "6C",
+        "beat": "6C        ",
         "grid": "1443",
         "crimedescr": "476 PC PASS FICTICIOUS CHECK",
         "ucr_ncic_code": "2501",
@@ -47,7 +47,7 @@
         "cdatetime": "1/1/06 0:00",
         "address": "3421 AUBURN BLVD",
         "district": "2",
-        "beat": "2A",
+        "beat": "2A        ",
         "grid": "508",
         "crimedescr": "459 PC  BURGLARY-UNSPECIFIED",
         "ucr_ncic_code": "2299",
@@ -58,7 +58,7 @@
         "cdatetime": "1/1/06 0:00",
         "address": "5301 BONNIEMAE WAY",
         "district": "6",
-        "beat": "6B",
+        "beat": "6B        ",
         "grid": "1084",
         "crimedescr": "530.5 PC USE PERSONAL ID INFO",
         "ucr_ncic_code": "2604",
@@ -96,7 +96,7 @@
         "crimedescr": "459 PC  BURGLARY BUSINESS",
         "ucr_ncic_code": "2203",
         "latitude": "38.6374478",
-        "longitude": "-121.38461255"
+        "longitude": "-121.3846125"
     },
     {
         "cdatetime": "1/1/06 0:00",
@@ -861,7 +861,7 @@
         "cdatetime": "1/1/06 2:54",
         "address": "1900 CANTERBURY RD",
         "district": "2",
-        "beat": "2C",
+        "beat": "2C        ",
         "grid": "613",
         "crimedescr": "243(E)1 BATTERY NONCOHAB SPOUS",
         "ucr_ncic_code": "1315",
@@ -83422,16 +83422,5 @@
         "ucr_ncic_code": "5400",
         "latitude": "38.47962803",
         "longitude": "-121.5286345"
-    },
-    {
-        "cdatetime": "05/24/19 10:15",
-        "address": " Danny",
-        "district": " New York",
-        "beat": null,
-        "grid": null,
-        "crimedescr": null,
-        "ucr_ncic_code": null,
-        "latitude": null,
-        "longitude": null
     }
 ]
