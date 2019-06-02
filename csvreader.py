@@ -19,6 +19,7 @@ def main():
 #Def for setting up the menu system.
 ##Function-items runs a def when called.
 def setupMenu():
+    """
     menu = ConsoleMenu("K.E.A - Krime Enforcment Archive")
     PrintTheData = FunctionItem("Show the data", showDB)
     MakeHTML = FunctionItem("Make Full HTML",makeHTML)
@@ -33,7 +34,34 @@ def setupMenu():
     menu.append_item(AddEntry)
     menu.append_item(SearchRadius)
     menu.show()
-    
+    """
+    options = {
+        '1': showDB,
+        '2': searchCrime,
+        '3': searchCrimeRadius,
+        '4': writeToCSV
+    }
+    menu = '1 - Search for a crime in the archive\n' \
+           '2 - Add a new record to the database\n' \
+           '3 - Export the database to JSON\n' \
+           '4 - Export the database to HTML\n' \
+           '0 - Exit'
+    print('Hello! Welcome to the K.E.A - Krime Enforcment Archive!\n'
+          'How can I help you today?\n' + menu)
+    selection = input()
+    is_running = should_run(selection)
+    while is_running:
+        try:
+            if int(selection) <= len(options):
+                options[selection]()
+        except (KeyError,ValueError) as keye:
+            print("No item on list with that ID")
+            pass
+        print('Is there anything else you want to do?\n' + menu)
+        selection = input()
+        is_running = should_run(selection)
+    print('Thank you for using the Sacramento Police Database!')
+
     
        
 # Scripts
@@ -185,7 +213,6 @@ def writeToCSV():
         writer.writerow(row)
     csv_file.close()
 
-
 def makeHTML():    
 #cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude
     html_output = ''
@@ -247,5 +274,10 @@ def makeJSON():
     with open(jsonFilePath, "w") as jsonFile:
         jsonFile.write(json.dumps(arr, indent = 4))
 
+def should_run(user_input):
+    if user_input == '0' or len(user_input) < 1:
+        return False
+    else:
+        return True
 main()
 pass
