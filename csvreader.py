@@ -64,7 +64,39 @@ def showDB():
 
 def searchCrime():
     #cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude
-    print('cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude')
+    #print('cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude')
+    searchChoise = [
+        'showDB',
+        'searchCrime',
+        'searchCrimeRadius',
+        'writeToCSV',
+        'makeHTML',
+        'makeJSON'
+    ]
+    print(searchChoise)
+    menu = '1 - address\n' \
+           '2 - district\n' \
+           '3 - Search for a crime on a area\n' \
+           '4 - Add a new crime to the Database\n' \
+           '5 - Make a HTML page\n' \
+           '6 - Make a JSON page\n' \
+           '0 - Exit'
+    print('Search Selected Enter search filter: ?\n' + menu)
+    selectionSearch = input()
+    pickedFilter = searchChoise[selectionSearch]
+    print(pickedFilter)
+    is_running = True
+    while is_running:
+        try:
+            if int(selectionSearch) <= len(searchChoise):
+                print("OK")
+                is_running = False
+        except (KeyError,ValueError) as keye:
+            print("No item on list with that ID")
+            pass
+
+
+
     searchFilter = input('What filter?: ')
     serachInput = input('What to search for?: ')
     html_output = ""
