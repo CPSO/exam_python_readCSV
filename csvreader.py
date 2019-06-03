@@ -2,13 +2,9 @@
 #cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude
 
 # Imports
-import csv
-import json
-from consolemenu import *
-from consolemenu.items import *
+import csv,json, io,sys,subprocess,os,platform
 from html import escape
-import io
-import sys
+
 fieldnames = ['cdatetime', 'address', 'district', 'beat', 'grid',
               'crimedescr', 'ucr_ncic_code', 'latitude', 'longitude']
 
@@ -19,32 +15,20 @@ def main():
 #Def for setting up the menu system.
 ##Function-items runs a def when called.
 def setupMenu():
-    """
-    menu = ConsoleMenu("K.E.A - Krime Enforcment Archive")
-    PrintTheData = FunctionItem("Show the data", showDB)
-    MakeHTML = FunctionItem("Make Full HTML",makeHTML)
-    MakeJSON = FunctionItem("Make Full JSON", makeJSON)
-    SearchTheDB = FunctionItem("Search the data", searchCrime)
-    AddEntry = FunctionItem("Add a new crime", writeToCSV)
-    SearchRadius = FunctionItem("Search crime in a radius", searchCrimeRadius)
-    menu.append_item(PrintTheData)
-    menu.append_item(MakeHTML)
-    menu.append_item(MakeJSON)
-    menu.append_item(SearchTheDB)
-    menu.append_item(AddEntry)
-    menu.append_item(SearchRadius)
-    menu.show()
-    """
     options = {
         '1': showDB,
         '2': searchCrime,
         '3': searchCrimeRadius,
-        '4': writeToCSV
+        '4': writeToCSV,
+        '5': makeHTML,
+        '6': makeJSON
     }
-    menu = '1 - Search for a crime in the archive\n' \
-           '2 - Add a new record to the database\n' \
-           '3 - Export the database to JSON\n' \
-           '4 - Export the database to HTML\n' \
+    menu = '1 - Show Database\n' \
+           '2 - Search for a crime\n' \
+           '3 - Search for a crime on a area\n' \
+           '4 - Add a new crime to the Database\n' \
+           '5 - Make a HTML page\n' \
+           '6 - Make a JSON page\n' \
            '0 - Exit'
     print('Hello! Welcome to the K.E.A - Krime Enforcment Archive!\n'
           'How can I help you today?\n' + menu)
@@ -76,7 +60,6 @@ def showDB():
             print(f'\t{row["cdatetime"]} works in the {row["address"]} department, and was born in {row["district"]}.')
             line_count += 1
         print(f'Processed {line_count} lines.')
-    Screen().input('Press [Enter] to continue')
     
 
 def searchCrime():
@@ -112,7 +95,7 @@ def searchCrime():
 
         html_output += '<style> table { font-family: arial, sans-serif; border-collapse: collapse; width: 100%; } td, th { border: 1px solid #dddddd; text-align: left; padding: 8px; } tr:nth-child(even) { background-color: #dddddd; } </style>'
 
-    html_file = open('html/searchhtml.html','w+')
+    html_file = open('html/search.html','w+')
     html_file = html_file.write(html_output)
 
 
@@ -131,7 +114,6 @@ def searchCrime():
     # write the data to a json file
     with open(jsonFilePath, "w") as jsonFile:
         jsonFile.write(json.dumps(arr, indent = 4))
-    Screen().input('Press [Enter] to continue')
 
 
     """
@@ -151,6 +133,20 @@ def searchCrime():
         jsonFile.write(json.dumps(data, indent = 4))
     Screen().input('Press [Enter] to continue')
     """
+    htmlFile = 'html\search.html'
+    jsonFile = 'json\search.json'
+    try:
+        if platform.system() == 'Darwin':       # macOS
+            subprocess.call(('open', htmlFile))
+            subprocess.call(('open', jsonFile))
+        elif platform.system() == 'Windows':    # Windows
+            os.startfile(htmlFile)
+            os.startfile(jsonFile)
+        else:                                   # linux variants
+            subprocess.call(('xdg-open', htmlFile))
+            subprocess.call(('xdg-open', jsonFile))
+    except FileNotFoundError as fnfE:
+        print("Unable to locate file")
 
 def searchCrimeRadius():
     jsonFilePath = "json/search.json"
