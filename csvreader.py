@@ -2,13 +2,9 @@
 #cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude
 
 # Imports
-import csv
-import json
-from consolemenu import *
-from consolemenu.items import *
+import csv,json, io,sys,subprocess,os,platform
 from html import escape
-import io
-import sys
+
 fieldnames = ['cdatetime', 'address', 'district', 'beat', 'grid',
               'crimedescr', 'ucr_ncic_code', 'latitude', 'longitude']
 
@@ -19,21 +15,38 @@ def main():
 #Def for setting up the menu system.
 ##Function-items runs a def when called.
 def setupMenu():
-    menu = ConsoleMenu("K.E.A - Krime Enforcment Archive")
-    PrintTheData = FunctionItem("Show the data", showDB)
-    MakeHTML = FunctionItem("Make Full HTML",makeHTML)
-    MakeJSON = FunctionItem("Make Full JSON", makeJSON)
-    SearchTheDB = FunctionItem("Search the data", searchCrime)
-    AddEntry = FunctionItem("Add a new crime", writeToCSV)
-    SearchRadius = FunctionItem("Search crime in a radius", searchCrimeRadius)
-    menu.append_item(PrintTheData)
-    menu.append_item(MakeHTML)
-    menu.append_item(MakeJSON)
-    menu.append_item(SearchTheDB)
-    menu.append_item(AddEntry)
-    menu.append_item(SearchRadius)
-    menu.show()
-    
+    options = {
+        '1': showDB,
+        '2': searchCrime,
+        '3': searchCrimeRadius,
+        '4': writeToCSV,
+        '5': makeHTML,
+        '6': makeJSON
+    }
+    menu = '1 - Show Database\n' \
+           '2 - Search for a crime\n' \
+           '3 - Search for a crime on a area\n' \
+           '4 - Add a new crime to the Database\n' \
+           '5 - Make a HTML page\n' \
+           '6 - Make a JSON page\n' \
+           '0 - Exit'
+    print('\nHello! Welcome to the K.E.A - Krime Enforcment Archive!\n'
+          '\nHow can I help you today?\n' + menu)
+    selection = input()
+    is_running = should_run(selection)
+
+    while is_running:
+        try:
+            if int(selection) <= len(options):
+                options[selection]()
+        except (KeyError,ValueError) as keye:
+            print("\nNo item on list with that ID \n")
+            pass
+        print('\nIs there anything else you want to do? \n' + menu)
+        selection = input()
+        is_running = should_run(selection)
+    print('Thank you for using K.E.A - Krime Enforcment Archive')
+
     
        
 # Scripts
@@ -48,13 +61,42 @@ def showDB():
             print(f'\t{row["cdatetime"]} works in the {row["address"]} department, and was born in {row["district"]}.')
             line_count += 1
         print(f'Processed {line_count} lines.')
-    Screen().input('Press [Enter] to continue')
-    
 
 def searchCrime():
-    #cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude
-    print('cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude')
-    searchFilter = input('What filter?: ')
+    searchChoise = [
+        'cdatetime',
+        'address',
+        'district',
+        'beat',
+        'crimedescr',
+        'ucr_ncic_code'
+    ]
+    menu = '0 - Search for Date and Time\n' \
+           '1 - Search for Address\n' \
+           '2 - Serach for District\n' \
+           '3 - Search for Beat\n' \
+           '4 - Search for Crime Descriptions\n' \
+           '5 - Search for Code\n'
+    print('Search Selected Enter search filter: \n' + menu)
+    selectionSearch = input()
+    convertInt = int(selectionSearch)
+    is_running = True
+
+    while is_running:
+        try:
+            pickedFilter = searchChoise[convertInt]
+            if int(selectionSearch) <= len(searchChoise):
+                print("value ok")
+                is_running = False
+        except (KeyError,ValueError, IndexError) as keye:
+            print("\nNo item on list with that ID \n")
+            pass
+            print('Is there anything else you want to do?\n' + menu)
+            selectionSearch = input()
+            convertInt = int(selectionSearch)
+            
+
+
     serachInput = input('What to search for?: ')
     html_output = ""
     dataEntry = []
@@ -65,16 +107,20 @@ def searchCrime():
         line_count = 0
         for row in csv_reader:
             if line_count == 0:
-                print(f'<th>{"</th>".join(row)}')
                 text = (f'<th>{"</th> <th>".join(row)}</th>')
                 html_output += text
                 line_count += 1
-            if row[searchFilter] == serachInput:
+            if row[pickedFilter] == serachInput:
                 dataEntry.append(f"<td>{row['cdatetime']}</td> <td>{row['address']}</td> <td>{row['district']}</td> <td>{row['beat']}</td> <td>{row['grid']}</td> <td>{row['crimedescr']}</td> <td>{row['ucr_ncic_code']}</td> <td>{row['latitude']}</td> <td>{row['longitude']}</td> ")
                 line_count += 1
         numberOfEntrys = f'<p>Search gave {len(dataEntry)} hits in the registerey</p>'
         html_output += '\n</tr>'
-        print(f'Processed {line_count} lines.')
+        
+        if (line_count > 1):
+            print(f'Processed {line_count} lines.\n')
+        else:
+            print(f'No records found \n')
+            pass
         html_output += '\n<tr>'
 
         for entry in dataEntry:
@@ -84,7 +130,7 @@ def searchCrime():
 
         html_output += '<style> table { font-family: arial, sans-serif; border-collapse: collapse; width: 100%; } td, th { border: 1px solid #dddddd; text-align: left; padding: 8px; } tr:nth-child(even) { background-color: #dddddd; } </style>'
 
-    html_file = open('html/searchhtml.html','w+')
+    html_file = open('html/search.html','w+')
     html_file = html_file.write(html_output)
 
 
@@ -96,33 +142,30 @@ def searchCrime():
     with open (csvFilePath) as csvFile:
         csvReader = csv.DictReader(csvFile)
         for csvRow in csvReader:
-            if csvRow[searchFilter] == serachInput:
+            if csvRow[pickedFilter] == serachInput:
                 arr.append(csvRow)
-    print(arr)
 
     # write the data to a json file
     with open(jsonFilePath, "w") as jsonFile:
         jsonFile.write(json.dumps(arr, indent = 4))
-    Screen().input('Press [Enter] to continue')
 
 
-    """
-    csvFilePath = "db/crimedb.csv"
-    jsonFilePath = "json/search.json"
-    #read the csv and add the data to a dictionary
-    data = {}
-    with open (csvFilePath) as csvFile:
-        csvReader = csv.DictReader(csvFile)
-        for csvRow in csvReader:
-            if csvRow[searchFilter] == serachInput:
-                id = csvRow["cdatetime"]
-                data[id] = csvRow
-    print(data)
-    # write the data toa json file
-    with open(jsonFilePath, "w") as jsonFile:
-        jsonFile.write(json.dumps(data, indent = 4))
-    Screen().input('Press [Enter] to continue')
-    """
+
+    #Code to open windows to show resaults of searches
+    htmlFile = 'html\search.html'
+    jsonFile = 'json\search.json'
+    try:
+        if platform.system() == 'Darwin':       # macOS
+            subprocess.call(('open', htmlFile))
+            subprocess.call(('open', jsonFile))
+        elif platform.system() == 'Windows':    # Windows
+            os.startfile(htmlFile)
+            os.startfile(jsonFile)
+        else:                                   # linux variants
+            subprocess.call(('xdg-open', htmlFile))
+            subprocess.call(('xdg-open', jsonFile))
+    except FileNotFoundError as fnfE:
+        print("Unable to locate file")
 
 def searchCrimeRadius():
     jsonFilePath = "json/search.json"
@@ -185,7 +228,6 @@ def writeToCSV():
         writer.writerow(row)
     csv_file.close()
 
-
 def makeHTML():    
 #cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude
     html_output = ''
@@ -247,5 +289,10 @@ def makeJSON():
     with open(jsonFilePath, "w") as jsonFile:
         jsonFile.write(json.dumps(arr, indent = 4))
 
+def should_run(user_input):
+    if user_input == '0' or len(user_input) < 1:
+        return False
+    else:
+        return True
 main()
 pass
