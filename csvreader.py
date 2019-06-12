@@ -221,12 +221,106 @@ def searchCrimeRadius():
     
 
 def writeToCSV():
-   
-    row = ['05/24/19 10:15', ' Bobby', ' New York']
-    with open('db/crimedb.csv', 'w') as csv_file:
-        writer = csv.writer(csv_file)
-        writer.writerow(row)
-    csv_file.close()
+    #https://pynative.com/python-input-function-get-user-input/
+    csvFile = open('db/crimedb.csv', 'a', newline='')
+    writer = csv.DictWriter(csvFile, delimiter=',', fieldnames=fieldnames)
+    
+    inputQuestion = 'Please input {0}\n'
+    inputExample = 'Ex.: "{0}"\n'
+    inputConfirmation = 'Is this the correct {0} (Y/n)? {1}\n'
+    newEntry = {}
+
+    entryBuilding = True
+    while entryBuilding:
+        date_sting_build = (input(inputQuestion.format('month')) + '/' +
+                            input(inputQuestion.format('day of month')) + '/' +
+                            input(inputQuestion.format('year')) + ' ' +
+                            input(inputQuestion.format('hour')) + ':' +
+                            input(inputQuestion.format('minute')))
+
+        date = date_sting_build
+        selection = input(inputConfirmation.format('date', date))
+        if selection.lower() != 'n':
+            entryBuilding = False
+            newEntry['cdatetime'] = date
+       
+    entryBuilding = True
+    while entryBuilding:
+        address = input(inputQuestion.format('address') + inputExample.format('1234 DEMO STREET')).upper()
+        selection = input(inputConfirmation.format('address', address))
+        if selection.lower() != 'n':
+            entryBuilding = False
+            newEntry['address'] = address
+
+    entryBuilding = True
+    while entryBuilding:
+        district = input(inputQuestion.format('district number') + inputExample.format('99'))
+        selection = input(inputConfirmation.format('district', district))
+        if selection.lower() != 'n':
+            entryBuilding = False
+            newEntry['district'] = district
+
+    entryBuilding = True
+    while entryBuilding:
+        beat = input(inputQuestion.format('beat') + inputExample.format('99A')).upper()
+        selection = input(inputConfirmation.format('beat', beat))
+        if selection.lower() != 'n':
+            entryBuilding = False
+            newEntry['beat'] = beat
+
+    entryBuilding = True
+    while entryBuilding:
+        grid = input(inputQuestion.format('grid') + inputExample.format('999'))
+        selection = input(inputConfirmation.format('grid', grid))
+        if selection.lower() != 'n':
+            entryBuilding = False
+            newEntry['grid'] = grid
+
+    entryBuilding = True
+    while entryBuilding:
+        description = input(inputQuestion.format('a Description') +
+                            inputExample.format('999 AWESOME-PYTHON')).upper()
+        selection = input(inputConfirmation.format('description', description))
+        if selection.lower() != 'n':
+            entryBuilding = False
+            newEntry['crimedescr'] = description
+
+    entryBuilding = True
+    while entryBuilding:
+        ucr = input(inputQuestion.format('UCR number') + inputExample.format('2299'))
+        selection = input(inputConfirmation.format('UCR number', ucr))
+        if selection.lower() != 'n':
+            entryBuilding = False
+            newEntry['ucr_ncic_code'] = ucr
+
+    entryBuilding = True
+    while entryBuilding:
+        coordinates = input(inputQuestion.format('coordinates, latitude first')
+                            + inputExample.format('38.6374478,-121.3846125'))
+        selection = input(f'Are these the correct coordinates (Y/n)? {coordinates}\n')
+        if selection.lower() != 'n':
+            entryBuilding = False
+            coordinates = coordinates.split(',')
+            newEntry['latitude'] = coordinates[0]
+            if coordinates[1][0] == ' ':
+                newEntry['longitude'] = coordinates[1][1:]
+            else:
+                newEntry['longitude'] = coordinates[1]
+
+    entryBuilding = True
+    while entryBuilding:
+        selection = input(f'Is this entry correct (y/N)? {newEntry}\n')
+        if selection.lower() == 'y':
+            entryBuilding = False
+            writer.writerow(newEntry)
+            print('Entry added to the system!')
+        else:
+            selection = input('Are you sure you want to cancel (y/N)? Unsaved data will be lost\n')
+            if selection.lower() == 'y':
+                entryBuilding = False
+
+    csvFile.close()
+
 
 def makeHTML():    
 #cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude
@@ -263,20 +357,6 @@ def makeHTML():
 def makeJSON():
     csvFilePath = "db/crimedb.csv"
     jsonFilePath = "json/parsed.json"
-    """
-    #read the csv and add the data to a dictionary
-    data = {}
-    with open (csvFilePath) as csvFile:
-        csvReader = csv.DictReader(csvFile)
-        for csvRow in csvReader:
-            id = csvRow["cdatetime"]
-            data[id] = csvRow
-    print(data)
-    # write the data toa json file
-    with open(jsonFilePath, "w") as jsonFile:
-        jsonFile.write(json.dumps(data, indent = 4))
-    """
-
     arr = []
 #read the csv and add the arr to a arrayn
 

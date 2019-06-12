@@ -83422,5 +83422,27 @@
         "ucr_ncic_code": "5400",
         "latitude": "38.47962803",
         "longitude": "-121.5286345"
+    },
+    {
+        "cdatetime": "01/12/2910 49:19",
+        "address": "37281 JDSADSAD",
+        "district": "321",
+        "beat": "7218A        ",
+        "grid": "7231",
+        "crimedescr": "8921 NJKDS DKLFSFS",
+        "ucr_ncic_code": "231231",
+        "latitude": "321321",
+        "longitude": "4213"
+    },
+    {
+        "cdatetime": "06/13/2019 00:30",
+        "address": "9999 OLD BLOB ROAD",
+        "district": "99",
+        "beat": "99A",
+        "grid": "999",
+        "crimedescr": "999 BLOB VANDAL",
+        "ucr_ncic_code": "9999",
+        "latitude": "38.524215",
+        "longitude": "53223532"
     }
 ]
