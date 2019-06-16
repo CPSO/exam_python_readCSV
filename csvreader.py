@@ -11,6 +11,10 @@ fieldnames = ['cdatetime', 'address', 'district', 'beat', 'grid',
 def main():
     setupMenu()
 
+def get_input(text):
+    print(text)
+    return input(text)
+
 
 #Def for setting up the menu system.
 ##Function-items runs a def when called.
@@ -39,8 +43,10 @@ def setupMenu():
         try:
             if int(selection) <= len(options):
                 options[selection]()
+                
         except (KeyError,ValueError) as keye:
             print("\nNo item on list with that ID \n")
+            print(keye)
             pass
         print('\nIs there anything else you want to do? \n' + menu)
         selection = input()
@@ -58,9 +64,12 @@ def showDB():
             if line_count == 0:
                 print(f'Column names are {", ".join(row)}')
                 line_count += 1
-            print(f'\t{row["cdatetime"]} works in the {row["address"]} department, and was born in {row["district"]}.')
+            print(f'\t time: {row["cdatetime"]} adress: {row["address"]} district: {row["district"]}.')
             line_count += 1
         print(f'Processed {line_count} lines.')
+        is_done = True
+    return is_done
+
 
 def searchCrime():
     searchChoise = [
@@ -129,7 +138,7 @@ def searchCrime():
         html_output += '\n</tr>'
 
         html_output += '<style> table { font-family: arial, sans-serif; border-collapse: collapse; width: 100%; } td, th { border: 1px solid #dddddd; text-align: left; padding: 8px; } tr:nth-child(even) { background-color: #dddddd; } </style>'
-
+    
     html_file = open('html/search.html','w+')
     html_file = html_file.write(html_output)
 
@@ -166,6 +175,7 @@ def searchCrime():
             subprocess.call(('xdg-open', jsonFile))
     except FileNotFoundError as fnfE:
         print("Unable to locate file")
+    return line_count
 
 def searchCrimeRadius():
     jsonFilePath = "json/search.json"
@@ -173,6 +183,8 @@ def searchCrimeRadius():
     print('latitude,longitude')
     input_coordinate  = input('Please input a coordinate separated by a comma (latitude,longitude)\n').split(',')
     input_radius  = float(input('Please input desired radius in miles\n')) * 0.0145  # converts miles to long/lat
+    print(input_coordinate)
+    print(input_radius)
     
     
 #read the csv and add the arr to a arrayn
@@ -215,7 +227,7 @@ def searchCrimeRadius():
     html_output += '</table>'
     html_output += f'<p>Search gave {len(dataEntry)} hits in the registerey</p>'
     html_output += '\n<style> table { font-family: arial, sans-serif; border-collapse: collapse; width: 100%; } td, th { border: 1px solid #dddddd; text-align: left; padding: 8px; } tr:nth-child(even) { background-color: #dddddd; } </style>'
-    html_file = open('html/searchhtml.html','w+')
+    html_file = open('html/search.html','w+')
     html_file = html_file.write(html_output)
 
     
@@ -324,6 +336,12 @@ def writeToCSV():
 
 def makeHTML():    
 #cdatetime,address,district,beat,grid,crimedescr,ucr_ncic_code,latitude,longitude
+    filePath = 'html/fullhtml.html'
+    if os.path.exists(filePath):
+        os.remove(filePath)
+    else:
+        print("Can not delete the file as it doesn't exists")
+
     html_output = ''
     data = []
     html_output += '<table>'
@@ -356,8 +374,14 @@ def makeHTML():
 
 def makeJSON():
     csvFilePath = "db/crimedb.csv"
-    jsonFilePath = "json/parsed.json"
+    jsonFilePath = "json/fulljson.json"
     arr = []
+
+    if os.path.exists(jsonFilePath):
+        os.remove(jsonFilePath)
+    else:
+        print("Can not delete the file as it doesn't exists")
+        
 #read the csv and add the arr to a arrayn
 
     with open (csvFilePath) as csvFile:
