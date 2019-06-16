@@ -1,1 +1,13 @@
-[]
+[
+    {
+        "cdatetime": "06/13/2019 00:30",
+        "address": "9999 OLD BLOB ROAD",
+        "district": "99",
+        "beat": "99A",
+        "grid": "999",
+        "crimedescr": "999 BLOB VANDAL",
+        "ucr_ncic_code": "9999",
+        "latitude": "38.524215",
+        "longitude": "53223532"
+    }
+]

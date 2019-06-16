@@ -10,6 +10,7 @@ fieldnames = ['cdatetime', 'address', 'district', 'beat', 'grid',
 
 def main():
     setupMenu()
+    print("main")
 
 def get_input(text):
     print(text)
@@ -43,7 +44,8 @@ def setupMenu():
         try:
             if int(selection) <= len(options):
                 options[selection]()
-                
+                is_running = False
+                pass
         except (KeyError,ValueError) as keye:
             print("\nNo item on list with that ID \n")
             print(keye)
@@ -67,8 +69,7 @@ def showDB():
             print(f'\t time: {row["cdatetime"]} adress: {row["address"]} district: {row["district"]}.')
             line_count += 1
         print(f'Processed {line_count} lines.')
-        is_done = True
-    return is_done
+    return line_count
 
 
 def searchCrime():
@@ -97,10 +98,13 @@ def searchCrime():
             if int(selectionSearch) <= len(searchChoise):
                 print("value ok")
                 is_running = False
+            if int(selectionSearch) == '9':
+                print('passing 9')
+                pass
         except (KeyError,ValueError, IndexError) as keye:
-            print("\nNo item on list with that ID \n")
+            print("\nSearch Error: No item on list with that ID \n")
             pass
-            print('Is there anything else you want to do?\n' + menu)
+            print('Enter search filter?\n' + menu)
             selectionSearch = input()
             convertInt = int(selectionSearch)
             
@@ -175,6 +179,7 @@ def searchCrime():
             subprocess.call(('xdg-open', jsonFile))
     except FileNotFoundError as fnfE:
         print("Unable to locate file")
+    
     return line_count
 
 def searchCrimeRadius():
@@ -203,6 +208,7 @@ def searchCrimeRadius():
                     dataEntry.append(f"<td>{row['cdatetime']}</td> <td>{row['address']}</td> <td>{row['district']}</td> <td>{row['beat']}</td> <td>{row['grid']}</td> <td>{row['crimedescr']}</td> <td>{row['ucr_ncic_code']}</td> <td>{row['latitude']}</td> <td>{row['longitude']}</td> ")
                     with open(jsonFilePath, "w") as jsonFile:
                         jsonFile.write(json.dumps(arr, indent = 4))
+    return row
         
     # HTML
     html_output += '<table>\n' \

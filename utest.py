@@ -1,5 +1,5 @@
 import unittest
-from csvreader import showDB, searchCrime, makeHTML,makeJSON
+from csvreader import showDB, searchCrime, makeHTML,makeJSON, searchCrimeRadius
 from unittest import mock
 import os
 
@@ -40,7 +40,32 @@ class Test(unittest.TestCase):
         is_created = False
         if os.path.exists(filePath):
             is_created = True
-        self.assertTrue(is_created,"Fails, since filename is wrong")
+        self.assertTrue(is_created,"Fails, since filename is wrong"),
+    
+    def test_showdb(self):
+        sb = showDB()# testing this method
+        self.assertGreater(sb,2, msg="did good"),
+    
+    def test_showdb_fail(self):
+        sb = showDB()# testing this method
+        self.assertLess(sb,2,msg="did bad")
+
+    
+        
+        
+    
+
+
+        
+
+    
+
+    
+
+
+
+
+    
 
 
 
