@@ -208,7 +208,7 @@ def searchCrimeRadius():
                     dataEntry.append(f"<td>{row['cdatetime']}</td> <td>{row['address']}</td> <td>{row['district']}</td> <td>{row['beat']}</td> <td>{row['grid']}</td> <td>{row['crimedescr']}</td> <td>{row['ucr_ncic_code']}</td> <td>{row['latitude']}</td> <td>{row['longitude']}</td> ")
                     with open(jsonFilePath, "w") as jsonFile:
                         jsonFile.write(json.dumps(arr, indent = 4))
-    return row
+    
         
     # HTML
     html_output += '<table>\n' \
@@ -235,6 +235,8 @@ def searchCrimeRadius():
     html_output += '\n<style> table { font-family: arial, sans-serif; border-collapse: collapse; width: 100%; } td, th { border: 1px solid #dddddd; text-align: left; padding: 8px; } tr:nth-child(even) { background-color: #dddddd; } </style>'
     html_file = open('html/search.html','w+')
     html_file = html_file.write(html_output)
+    line_data = len(dataEntry)
+    return line_data
 
     
 
@@ -338,6 +340,7 @@ def writeToCSV():
                 entryBuilding = False
 
     csvFile.close()
+    return newEntry
 
 
 def makeHTML():    

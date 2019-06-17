@@ -1,5 +1,5 @@
 import unittest
-from csvreader import showDB, searchCrime, makeHTML,makeJSON, searchCrimeRadius
+from csvreader import showDB, searchCrime, makeHTML,makeJSON, searchCrimeRadius, writeToCSV
 from unittest import mock
 import os
 
@@ -49,8 +49,27 @@ class Test(unittest.TestCase):
     def test_showdb_fail(self):
         sb = showDB()# testing this method
         self.assertLess(sb,2,msg="did bad")
-
     
+    def test_search_crime(self):
+        sc = searchCrime()
+        self.assertGreater(sc,1,msg="did good search")
+
+    def test_search_crime_fail(self):
+        sc = searchCrime()
+        self.assertLess(sc,2,msg="did bad search")   
+
+    def test_search_crime_radius(self):
+        sc = searchCrimeRadius()
+        self.assertGreater(sc,1,msg="did good search")
+
+    def test_search_crime_radius_fail(self):
+        sc = searchCrimeRadius()
+        self.assertLess(sc,2,msg="did bad search")
+    
+    def test_write_to_csv(self):
+        wrc = writeToCSV()
+        blob = {'cdatetime':'01/02/2000 14:00','address':'1234 TEST STREET','district':'88','beat':'88A','grid':'888','crimedescr':'888 BLOBBY', 'ucr_ncic_code':'8899','latitude':'123','longitude':'456' }
+        self.assertDictEqual(wrc,blob,msg='did not match')
         
         
     

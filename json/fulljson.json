@@ -83444,5 +83444,60 @@
         "ucr_ncic_code": "9999",
         "latitude": "38.524215",
         "longitude": "53223532"
+    },
+    {
+        "cdatetime": "05/07/1993 14:02",
+        "address": "1234 DEMO STREET",
+        "district": "88",
+        "beat": "88A",
+        "grid": "888",
+        "crimedescr": "888 BLOBBY",
+        "ucr_ncic_code": "8899",
+        "latitude": "123.456",
+        "longitude": "654.321"
+    },
+    {
+        "cdatetime": "01/01/2000 14:00",
+        "address": "1234 TEST STREET",
+        "district": "88",
+        "beat": "88A",
+        "grid": "888",
+        "crimedescr": "888 BLOBBY",
+        "ucr_ncic_code": "8899",
+        "latitude": "123.456",
+        "longitude": "654.321"
+    },
+    {
+        "cdatetime": "01/02/2000 14:00",
+        "address": "1234 TEST STREET",
+        "district": "88",
+        "beat": "88A",
+        "grid": "888",
+        "crimedescr": "888 TEST PY",
+        "ucr_ncic_code": "8899",
+        "latitude": "123",
+        "longitude": "123"
+    },
+    {
+        "cdatetime": "01/02/2000 14:00",
+        "address": "1234 TEST STREET",
+        "district": "88",
+        "beat": "88A",
+        "grid": "888",
+        "crimedescr": "888 BLOBBY",
+        "ucr_ncic_code": "8899",
+        "latitude": "123.456",
+        "longitude": "654.321"
+    },
+    {
+        "cdatetime": "01/02/2000 14:00",
+        "address": "1234 TEST STREET",
+        "district": "88",
+        "beat": "88A",
+        "grid": "888",
+        "crimedescr": "888 BLOBBY",
+        "ucr_ncic_code": "8899",
+        "latitude": "123",
+        "longitude": "456"
     }
 ]
